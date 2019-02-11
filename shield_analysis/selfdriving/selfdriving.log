@@ -1,0 +1,21 @@
+Sampled initial state is:
+ [[-0.71164599]
+ [-0.78377973]]
+Sampled initial state is:
+ [[-0.45826595]
+ [ 0.36350665]]
+sess has been restored from ../ddpg_chkp/selfdriving/300200300250200/model.chkp
+min reward: -900
+sess has been saved to ../ddpg_chkp/selfdriving/300200300250200/final_model.chkp
+train run time: 0.361190080643 s
+----ep: 0 ----
+initial state:
+[[ 0.73619294]
+ [-0.71493875]] 
+state at terminal step:
+[[ 2.02091824]
+ [-0.21486631]] 
+last action:
+[[0.34343186]]
+----terminal step: 13 ----
+----ep: 1 ----

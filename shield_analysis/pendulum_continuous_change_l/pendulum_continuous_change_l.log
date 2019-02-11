@@ -1,0 +1,5 @@
+sess has been restored from ../ddpg_chkp/perfect_model/pendulum/change_l/model.chkp
+min reward: -900
+sess has been saved to ../ddpg_chkp/perfect_model/pendulum/change_l/final_model.chkp
+train run time: 0.527448892593 s
+----ep: 0 ----

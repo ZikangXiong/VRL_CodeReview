@@ -1,0 +1,5 @@
+sess has been restored from ../ddpg_chkp/quadcopter/240200280240200/model.chkp
+min reward: -900
+sess has been saved to ../ddpg_chkp/quadcopter/240200280240200/final_model.chkp
+train run time: 0.338767051697 s
+----ep: 0 ----

@@ -1,0 +1,28 @@
+sess has been restored from ../ddpg_chkp/car-platoon/discrete/4/500400300600500400300/model.chkp
+min reward: -900
+sess has been saved to ../ddpg_chkp/car-platoon/discrete/4/500400300600500400300/final_model.chkp
+train run time: 0.367794036865 s
+----ep: 0 ----
+initial state:
+[[ 0.07361929]
+ [-0.09102883]
+ [-0.09455863]
+ [-0.0230455 ]
+ [ 0.06636794]
+ [-0.05575041]
+ [ 0.0897947 ]] 
+state at terminal step:
+[[-1.52983160e-03]
+ [ 1.29688161e-03]
+ [-2.65648457e-09]
+ [ 4.54191866e-05]
+ [-2.18219928e-09]
+ [-5.27449248e-03]
+ [ 4.50333851e-09]] 
+last action:
+[[ 0.0000000e+00]
+ [-6.5192573e-08]
+ [ 3.2596287e-08]
+ [-3.7252899e-08]]
+----terminal step: 4999 ----
+----ep: 1 ----

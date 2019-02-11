@@ -1,0 +1,5 @@
+sess has been restored from ../ddpg_chkp/perfect_model/selfdriving/64646464/model.chkp
+min reward: -100
+sess has been saved to ../ddpg_chkp/perfect_model/selfdriving/64646464/final_model.chkp
+train run time: 0.295704841614 s
+----ep: 0 ----

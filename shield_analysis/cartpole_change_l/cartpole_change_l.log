@@ -1,0 +1,5 @@
+sess has been restored from ../ddpg_chkp/perfect_model/cartpole/change_l/model.chkp
+min reward: -900
+sess has been saved to ../ddpg_chkp/perfect_model/cartpole/change_l/final_model.chkp
+train run time: 0.54275393486 s
+----ep: 0 ----
