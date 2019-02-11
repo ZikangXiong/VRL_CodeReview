@@ -4,10 +4,10 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-10-23 17:04:25
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-10 19:28:56
+# Last Modified time: 2019-02-10 20:20:43
 # -------------------------------
 import sys
-sys.path.append("../")
+sys.path.append("../../")
 
 from main import *
 import numpy as np
@@ -102,4 +102,4 @@ if __name__ == "__main__":
   # critic_structure = [int(i) for i in list(sys.argv[3].split(','))]
   # train_dir = sys.argv[4]
 
-  pendulum(0, [1200,900], [1000,900,800], "../ddpg_chkp/perfect_model/pendulum/change_l/", "random_search", 100, 2000) 
+  pendulum(10000, [1200,900], [1000,900,800], "../ddpg_chkp/perfect_model/pendulum/change_l/", "random_search", 100, 2000) 

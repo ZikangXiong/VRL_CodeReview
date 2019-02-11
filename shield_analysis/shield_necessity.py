@@ -4,7 +4,7 @@
 # Email: zikangxiong@gmail.com
 # Date:   2019-02-10 15:40:07
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-10 16:30:24
+# Last Modified time: 2019-02-10 20:06:32
 # -------------------------------
 import numpy as np
 
@@ -29,7 +29,7 @@ def test_necessity(env, actor, shield_state_list):
     		a = actor.predict(np.reshape(x, (1, actor.s_dim)))
     		x, _, t = env.step(a)
     		if t:
-    			print "{}/{}: terminal at step {}".format(now, total, step)
+    			print "{}/{}: terminal at step {}\n{}".format(now, total, step, ss)
     			fail_time += 1
     			break
     	now += 1
