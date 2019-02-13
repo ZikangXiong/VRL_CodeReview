@@ -4,10 +4,10 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-10-27 21:02:27
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-10 17:05:58
+# Last Modified time: 2019-02-13 01:13:29
 # -------------------------------
 import sys
-sys.path.append("../../")
+sys.path.append("../")
 
 import numpy as np
 from DDPG import *
@@ -94,10 +94,10 @@ def carplatoon(learning_method, number_of_rollouts, simulation_steps, learning_e
            'test_episodes_len': 5000}
   actor = DDPG(env, args)
 
-  shield_list = read_scan("8cps_shield.log_ret.pkl")
+  shield_list = read_scan("8-car-platoon_continuous/8-car-platoon_continuous.log_ret.pkl")
   test_necessity(env, actor, shield_list)
 
   actor.sess.close()
 
 if __name__ == "__main__":
-  carplatoon("random_search", 200, 2000, 0, [400, 300, 200], [500, 400, 300, 200], "../../ddpg_chkp/car-platoon/continuous/8/400300200500400300200/") 
+  carplatoon("random_search", 200, 2000, 0, [400, 300, 200], [500, 400, 300, 200], "../ddpg_chkp/car-platoon/continuous/8/400300200500400300200/") 

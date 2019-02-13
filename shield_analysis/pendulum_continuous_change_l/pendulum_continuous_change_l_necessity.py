@@ -4,10 +4,10 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-10-23 17:04:25
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-13 02:09:16
+# Last Modified time: 2019-02-13 02:09:24
 # -------------------------------
 import sys
-sys.path.append("../../")
+sys.path.append("../")
 
 from main import *
 import numpy as np
@@ -15,6 +15,8 @@ from DDPG import *
 import sys
 from shield import Shield
 from Environment import Environment
+from shield_analysis.log_scan import read_scan
+from shield_analysis.shield_necessity import test_necessity
 
 def pendulum(learning_eposides, critic_structure, actor_structure, train_dir, learning_method, number_of_rollouts, simulation_steps):
   
@@ -61,38 +63,14 @@ def pendulum(learning_eposides, critic_structure, actor_structure, train_dir, le
            'random_seed': 6553,
            'tau': 0.005,
            'model_path': train_dir+"model.chkp",
-           'enable_test': True, 
+           'enable_test': False, 
            'test_episodes': 1000,
            'test_episodes_len': 5000}
 
   actor = DDPG(env, args)
   
-  #################### Shield #################
-  model_path = os.path.split(args['model_path'])[0]+'/'
-  linear_func_model_name = 'K.model'
-  model_path = model_path+linear_func_model_name+'.npy'
-
-  def rewardf(x, Q, u, R):
-    return env.reward(x, u)
-
-  shield = Shield(env, actor, model_path, force_learning=False, debug=False)
-  shield.train_shield(learning_method, number_of_rollouts, simulation_steps, rewardf=rewardf, eq_err=1e-2, explore_mag = 0.3, step_size = 0.3)
-  shield.test_shield(1000, 5000, mode="single")
-  # shield.test_shield(100, 1000, mode="all")
-
-  ################# Metrics ######################
-  # actor_boundary(env, actor, epsoides=500, steps=200)
-  # shield.shield_boundary(2000, 50)
-  # terminal_err = 0.1
-  # sample_steps = 100
-  # sample_ep = 1000
-  # print "---\nterminal error: {}\nsample_ep: {}\nsample_steps: {}\n---".format(terminal_err, sample_ep, sample_steps)
-  # dist_nn_lf = metrics.distance_between_linear_function_and_neural_network(env, actor, shield.K, terminal_err, sample_ep, sample_steps)
-  # print "dist_nn_lf: ", dist_nn_lf
-  # nn_perf = metrics.neural_network_performance(env, actor, terminal_err, sample_ep, sample_steps)
-  # print "nn_perf", nn_perf
-  # shield_perf = metrics.linear_function_performance(env, shield.K, terminal_err, sample_ep, sample_steps)
-  # print "shield_perf", shield_perf
+  shield_list = read_scan("pendulum_continuous_change_l/pendulum_continuous_change_l.log_ret.pkl")
+  test_necessity(env, actor, shield_list)
 
   actor.sess.close()
 

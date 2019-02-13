@@ -4,10 +4,10 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-10-23 22:14:33
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-10 16:25:42
+# Last Modified time: 2019-02-13 01:26:14
 # -------------------------------
 import sys
-sys.path.append('../..')
+sys.path.append('../')
 
 from shield_analysis.shield_necessity import test_necessity
 from shield_analysis.log_scan import read_scan
@@ -59,11 +59,11 @@ def cartpole(learning_method, number_of_rollouts, simulation_steps, learning_epo
          'test_episodes_len': 5000}
   actor =  DDPG(env, args=args)
 
-  shield_list = read_scan("11-10-cc.log_ret.pkl")
+  shield_list = read_scan("cartpole_continuous/cartpole_continuous.log_ret.pkl")
   test_necessity(env, actor, shield_list)
 
   actor.sess.close()
 
 if __name__ == "__main__":
 
-  cartpole("random_search", 100, 200, 0, [300, 200], [300, 250, 200], "../../ddpg_chkp/cartpole/continuous/300200300250200/")
+  cartpole("random_search", 100, 200, 0, [300, 200], [300, 250, 200], "../ddpg_chkp/cartpole/continuous/300200300250200/")

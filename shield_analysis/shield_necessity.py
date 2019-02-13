@@ -4,14 +4,14 @@
 # Email: zikangxiong@gmail.com
 # Date:   2019-02-10 15:40:07
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-13 00:50:14
+# Last Modified time: 2019-02-13 02:04:35
 # -------------------------------
 import numpy as np
-import ramdom
+import random
 
 def test_necessity(env, actor, shield_state_list):
     """Start from a shield states, see if 
-    	the shield action is necessary.
+        the shield action is necessary.
     
     Args:
         env (Environment): Test Environment
@@ -29,21 +29,21 @@ def test_necessity(env, actor, shield_state_list):
         total = SAMPLE_SIZE
     else:
         indices = range(total)
-    
+
     for i in indices:
         ss = shield_state_list[i]
-    	x = env.reset(ss)
-    	for step in range(TEST_STEP):
-    		a = actor.predict(np.reshape(x, (1, actor.s_dim)))
-    		x, _, t = env.step(a)
-    		if t:
-    			print "{}/{}: start from {}, terminal at step {}\n{}".format(now, total, ss, step, x)
-    			fail_time += 1
-    			break
-    	now += 1
+        x = env.reset(ss)
+        for step in range(TEST_STEP):
+            a = actor.predict(np.reshape(x, (1, actor.s_dim)))
+            x, _, t = env.step(a.reshape(actor.a_dim, 1))
+            if t:
+                print "{}/{}: start from {}, terminal at step {}\n{}".format(now, total, ss, step, x)
+                fail_time += 1
+                break
+        now += 1
 
     print "Test step: {}\n, \
-    		Test state list length: {}\n\
-    		starting from shield state, fail time: {}\n, \
-    		ratio: {}\
-    		".format(TEST_STEP, len(shield_state_list), fail_time, fail_time/ len(shield_state_list))
+           Sample Size: {}\n\
+            starting from shield state, fail time: {}\n, \
+            ratio: {}\
+            ".format(TEST_STEP, total, fail_time, fail_time/total)
