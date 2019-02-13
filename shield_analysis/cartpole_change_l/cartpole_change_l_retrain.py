@@ -4,16 +4,18 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-10-20 11:54:03
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-10 20:20:27
+# Last Modified time: 2019-02-12 12:53:15
 # -------------------------------
 import sys
-sys.path.append("../../")
+sys.path.append("../")
 
 import numpy as np
 from main import *
 from DDPG import *
 from Environment import Environment
 from shield import Shield
+from shield_analysis.retrain_nn_and_shield import retrain_nn_and_shield
+from shield_analysis.log_scan import read_scan
 
 def cartpole(learning_method, number_of_rollouts, simulation_steps, ddpg_learning_eposides, critic_structure, actor_structure, train_dir):
   l = .22+0.15 # rod length is 2l
@@ -55,21 +57,25 @@ def cartpole(learning_method, number_of_rollouts, simulation_steps, ddpg_learnin
            'tau': 0.005,
            'model_path': train_dir+"model.chkp",
            'enable_test': True, 
-           'test_episodes': 1000,
+           'test_episodes': 1,
            'test_episodes_len': 5000}
   actor = DDPG(env, args)
 
   #################### Shield #################
-  # model_path = os.path.split(args['model_path'])[0]+'/'
-  # linear_func_model_name = 'K.model'
-  # model_path = model_path+linear_func_model_name+'.npy'
+  model_path = os.path.split(args['model_path'])[0]+'/'
+  linear_func_model_name = 'K.model'
+  model_path = model_path+linear_func_model_name+'.npy'
 
-  # def rewardf(x, Q, u, R):
-  #   return np.matrix([[env.reward(x, u)]])
+  def rewardf(x, Q, u, R):
+    return np.matrix([[env.reward(x, u)]])
 
-  # names = {0:"cart position, meters", 1:"cart velocity", 2:"pendulum angle, radians", 3:"pendulum angle velocity"}
-  # shield = Shield(env, actor, model_path)
-  # shield.train_shield(learning_method, number_of_rollouts, simulation_steps, rewardf=rewardf, names=names, explore_mag = 1.0, step_size = 1.0)
+  names = {0:"cart position, meters", 1:"cart velocity", 2:"pendulum angle, radians", 3:"pendulum angle velocity"}
+  shield = Shield(env, None, model_path)
+  shield.train_shield(learning_method, number_of_rollouts, simulation_steps, rewardf=rewardf, names=names, explore_mag = 1.0, step_size = 1.0)
+  K = shield.K_list[0]
+  shield_state_list = read_scan("cartpole_change_l.log_ret.pkl")
+  retrain_nn_and_shield(actor, K, shield_state_list)
+
   # shield.test_shield(1000, 5000, mode="single")
   # shield.test_shield(1000, 100, mode="all")
 
@@ -95,4 +101,4 @@ if __name__ == "__main__":
   # critic_structure = [int(i) for i in list(sys.argv[3].split(','))]
   # train_dir = sys.argv[4]
 
-  cartpole("random_search", 100, 200, 0, [1200,900], [1000,900,800], "retrain/1200901000900800/")
+  cartpole("random_search", 200, 500, 0, [1200,900], [1000,900,800], "cartpole_change_l/retrain/1200901000900800/")

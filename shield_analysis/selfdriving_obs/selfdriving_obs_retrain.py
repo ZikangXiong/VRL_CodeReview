@@ -4,16 +4,19 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-11-06 12:23:39
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-10 23:33:29
+# Last Modified time: 2019-02-12 13:00:03
 # -------------------------------
 import sys
-sys.path.append("../../")
+sys.path.append("../")
 
 from main import *
 from shield import Shield
 from Environment import Environment
 
 from DDPG import *
+
+from shield_analysis.retrain_nn_and_shield import retrain_nn_and_shield
+from shield_analysis.log_scan import read_scan
 
 # Show that there is an invariant that can prove the policy safe
 def selfdrive(learning_method, number_of_rollouts, simulation_steps, learning_eposides, critic_structure, actor_structure, train_dir, K=None):
@@ -65,19 +68,21 @@ def selfdrive(learning_method, number_of_rollouts, simulation_steps, learning_ep
        'test_episodes_len': 5000}
   actor =  DDPG(env, args=args)
 
-  # model_path = os.path.split(args['model_path'])[0]+'/'
-  # linear_func_model_name = 'K.model'
-  # model_path = model_path+linear_func_model_name+'.npy'
+  model_path = os.path.split(args['model_path'])[0]+'/'
+  linear_func_model_name = 'K.model'
+  model_path = model_path+linear_func_model_name+'.npy'
 
-  # def rewardf(x, Q, u, R):
-  #   return np.matrix([[env.reward(x, u)]])
+  def rewardf(x, Q, u, R):
+    return np.matrix([[env.reward(x, u)]])
 
-  # shield = Shield(env, actor, model_path=model_path, force_learning=False)
-  # shield.train_shield(learning_method, number_of_rollouts, simulation_steps, rewardf=rewardf, explore_mag=1.0, step_size=1.0)
-  # shield.test_shield(1000, 5000)
+  shield = Shield(env, actor, model_path=model_path, force_learning=False)
+  shield.train_shield(learning_method, number_of_rollouts, simulation_steps, rewardf=rewardf, explore_mag=1.0, step_size=1.0)
+  K = shield.K_list[0]
+  shield_state_list = read_scan("selfdriving_obs.log_ret.pkl")
+  retrain_nn_and_shield(actor, K, shield_state_list)
 
   actor.sess.close()
 
 if __name__ == "__main__":
 
-  selfdrive("random_search", 100, 2000, 0, [64, 64], [64, 64], "retrain/64646464/")
+  selfdrive("random_search", 100, 2000, 0, [64, 64], [64, 64], "selfdriving_obs/retrain/64646464/")
