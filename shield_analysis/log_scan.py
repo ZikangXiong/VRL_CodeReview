@@ -4,7 +4,7 @@
 # Email: zikangxiong@gmail.com
 # Date:   2019-02-10 13:45:51
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-10 16:26:15
+# Last Modified time: 2019-02-11 12:21:38
 # -------------------------------
 import re
 import numpy as np 
@@ -49,3 +49,5 @@ def read_scan(log_scan_path):
     with open(log_scan_path, "rb") as fp: 
         ret_list = pickle.load(fp)
     return ret_list
+
+#log_scan("cartpole_change_l/cartpole_change_l.log")

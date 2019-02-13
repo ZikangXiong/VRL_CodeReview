@@ -4,7 +4,7 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-10-23 17:04:25
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-12 12:58:21
+# Last Modified time: 2019-02-13 00:06:29
 # -------------------------------
 import sys
 sys.path.append("../")
@@ -62,7 +62,7 @@ def pendulum(learning_eposides, critic_structure, actor_structure, train_dir, le
            'random_seed': 6553,
            'tau': 0.005,
            'model_path': train_dir+"model.chkp",
-           'enable_test': True, 
+           'enable_test': False, 
            'test_episodes': 1000,
            'test_episodes_len': 5000}
 
@@ -79,7 +79,7 @@ def pendulum(learning_eposides, critic_structure, actor_structure, train_dir, le
   shield = Shield(env, actor, model_path, force_learning=False, debug=False)
   shield.train_shield(learning_method, number_of_rollouts, simulation_steps, rewardf=rewardf, eq_err=1e-2, explore_mag = 0.3, step_size = 0.3)
   K = shield.K_list[0]
-  shield_state_list = read_scan("pendulum_continuous_change_m.log_ret.pkl")
+  shield_state_list = read_scan("pendulum_continuous_change_m/pendulum_continuous_change_m.log_ret.pkl")
   retrain_nn_and_shield(actor, K, shield_state_list)
 
   ################# Metrics ######################
@@ -104,4 +104,4 @@ if __name__ == "__main__":
   # critic_structure = [int(i) for i in list(sys.argv[3].split(','))]
   # train_dir = sys.argv[4]
 
-  pendulum(10000, [1200,900], [1000,900,800], "pendulum_continuous_change_m/retrain/1200901000900800/", "random_search", 100, 2000) 
+  pendulum(0, [1200,900], [1000,900,800], "pendulum_continuous_change_m/retrain/1200901000900800/", "random_search", 100, 2000) 

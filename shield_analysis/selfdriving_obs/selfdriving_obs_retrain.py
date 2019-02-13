@@ -4,7 +4,7 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-11-06 12:23:39
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-12 13:00:03
+# Last Modified time: 2019-02-13 00:13:42
 # -------------------------------
 import sys
 sys.path.append("../")
@@ -63,7 +63,7 @@ def selfdrive(learning_method, number_of_rollouts, simulation_steps, learning_ep
        'random_seed': 653,
        'tau': 0.005,
        'model_path': train_dir+"model.chkp",
-       'enable_test': True, 
+       'enable_test': False, 
        'test_episodes': 1000,
        'test_episodes_len': 5000}
   actor =  DDPG(env, args=args)
@@ -78,7 +78,7 @@ def selfdrive(learning_method, number_of_rollouts, simulation_steps, learning_ep
   shield = Shield(env, actor, model_path=model_path, force_learning=False)
   shield.train_shield(learning_method, number_of_rollouts, simulation_steps, rewardf=rewardf, explore_mag=1.0, step_size=1.0)
   K = shield.K_list[0]
-  shield_state_list = read_scan("selfdriving_obs.log_ret.pkl")
+  shield_state_list = read_scan("selfdriving_obs/selfdriving_obs.log_ret.pkl")
   retrain_nn_and_shield(actor, K, shield_state_list)
 
   actor.sess.close()

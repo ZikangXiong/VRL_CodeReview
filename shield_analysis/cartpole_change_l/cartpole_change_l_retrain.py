@@ -4,7 +4,7 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-10-20 11:54:03
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-12 12:53:15
+# Last Modified time: 2019-02-13 00:34:24
 # -------------------------------
 import sys
 sys.path.append("../")
@@ -50,14 +50,14 @@ def cartpole(learning_method, number_of_rollouts, simulation_steps, ddpg_learnin
            'critic_structure': critic_structure, 
            'buffer_size': 1000000,
            'gamma': 0.99,
-           'max_episode_len': 1,
+           'max_episode_len': 10,
            'max_episodes': ddpg_learning_eposides,
            'minibatch_size': 64,
            'random_seed': 6553,
            'tau': 0.005,
            'model_path': train_dir+"model.chkp",
-           'enable_test': True, 
-           'test_episodes': 1,
+           'enable_test': False, 
+           'test_episodes': 1000,
            'test_episodes_len': 5000}
   actor = DDPG(env, args)
 
@@ -73,7 +73,7 @@ def cartpole(learning_method, number_of_rollouts, simulation_steps, ddpg_learnin
   shield = Shield(env, None, model_path)
   shield.train_shield(learning_method, number_of_rollouts, simulation_steps, rewardf=rewardf, names=names, explore_mag = 1.0, step_size = 1.0)
   K = shield.K_list[0]
-  shield_state_list = read_scan("cartpole_change_l.log_ret.pkl")
+  shield_state_list = read_scan("cartpole_change_l/cartpole_change_l.log_ret.pkl")
   retrain_nn_and_shield(actor, K, shield_state_list)
 
   # shield.test_shield(1000, 5000, mode="single")
