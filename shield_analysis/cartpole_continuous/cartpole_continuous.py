@@ -7,7 +7,7 @@
 # Last Modified time: 2019-02-10 19:28:19
 # -------------------------------
 import sys
-sys.path.append("../../")
+sys.path.append("../")
 
 from main import *
 from DDPG import *
