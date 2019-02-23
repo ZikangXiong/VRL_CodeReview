@@ -4,8 +4,8 @@ Artifact Evaluation for Paper #291
 An Inductive Synthesis Framework for Verifiable Machine Learning
 ==================================
 
-
-We provide a prepared docker image to run our artifact. The experimental results collected in the docker image may be different than what we reported in the paper because (1) it is a docker environment with limited memory (2) the tool in the docker image may have different behaviors, i.e., the random generator used by the TensorFlow library may be different, which may lead to a significantly different search direction of both a synthesized program and an inferred invariant. However, our artifact suffices to prove the reproducibility of our work.
+# Docker Image and Expections:
+We provide a prepared docker image to run our artifact. The experimental results collected in the docker image may be different than what we reported in the paper because (1) it is a docker environment with limited memory (2) the tool in the docker image may have different behaviors, i.e., the random generator used by the TensorFlow library may be different, which may lead to a significantly different search direction of both a synthesized program and an inferred invariant. Therefore please be aware that the numbers obtained in the docker image may not exactly match the numbers in the paper but they are comparable. Our artifact should suffice to prove the reproducibility of our work.
 
 Please follow the steps below to get our artifact:
 
