@@ -5,7 +5,7 @@ An Inductive Synthesis Framework for Verifiable Machine Learning
 ==================================
 
 
-We provide a prepared docker file to run our artifact. The experiment result collected in the docker file may be different than what we reported in the paper because (1) it is a docker environment with limited memory (2) affected by the environment, the tool in the docker file may have different behaviors, i.e., the random generator used by the TensorFlow library may be different, which may lead to a significantly different search direction of both synthesized programs and inferred invariants. However, the artifact suffices to prove the reproducibility of our work.
+We provide a prepared docker image to run our artifact. The experimental results collected in the docker image may be different than what we reported in the paper because (1) it is a docker environment with limited memory (2) the tool in the docker image may have different behaviors, i.e., the random generator used by the TensorFlow library may be different, which may lead to a significantly different search direction of both a synthesized program and an inferred invariant. However, our artifact suffices to prove the reproducibility of our work.
 
 Please follow the steps below to get our artifact:
 
@@ -41,11 +41,11 @@ There are 4 flags:
 **--nn\_test**: adding this flag runs the pretrained neural network controller alone without shield protection.  
 **--shield\_test**:  adding this flag runs the pretrained neural network controller in tandem with a pre-synthesized and verified program distilled from the network to provide shield protection.  
 **--retrain\_shield**: adding this flag re-synthesizes a deterministic program to be used for shielding.
-**--test\_episodes**: This parameter specifies the number of steps used for each simulation run. The default value is 100.    
+**--test\_episodes**: This parameter specifies the number of simulation steps used for each simulation run. The default value is 100.    
 
 ## Getting Results
 ### Run a Single Benchmark
-After running a benchmark, our tool reports the total simulation time and the number of times that the system enters an unsafe region.  
+After running a benchmark, our tool reports the total simulation time and the number of times that the system enters an unsafe state.  
 For example, running `python 4-car-platoon.py --nn_test --test_episodes=1000` may produce the following result:
 
 <center>
@@ -55,7 +55,7 @@ For example, running `python 4-car-platoon.py --nn_test --test_episodes=1000` ma
 
 The system is indeed unsafe since a number of safety violations were observed.
 
-Running a neural network controller in tandem with a verified program distilled from it can eliminate those unsafe neural actions. Our tool produces in its output the number of interventions from the program to the neural network controller. It also gives the total running time including the additional cost of shielding.
+Running a neural network controller in tandem with a verified program distilled from it can eliminate all those unsafe neural actions. Our tool produces in its output the number of interventions from the program to the neural network controller. It also gives the total running time including the additional cost of shielding.
 
 Running `python 4-car-platoon.py --shield_test --test_episodes=1000` may produce the following result (using a pre-synthesized and verified program):
 <center>
@@ -69,7 +69,7 @@ Overhead = (shield_test_runing_time - neural_network_test_runing_time) /
 neural_network_test_runing_time * 100%
 ```
   
-For each benchmark, with the protection of a shield, our system never enters an unsafe region. We may get the following result for all our benchmarks.
+For each benchmark, with the protection of a shield, our system never enters an unsafe state. We may get the following result for all our benchmarks.
 
 <center>
 ![image](https://user-images.githubusercontent.com/11462215/53280265-21dcb080-36e6-11e9-9ed7-1a9146b6529e.png)
@@ -80,7 +80,7 @@ Running with --retrain_shield can re-synthesize a new deterministic program to r
 ![image](https://user-images.githubusercontent.com/11462215/53280299-6f591d80-36e6-11e9-88d3-0b83c97dec26.png)
 </center>
 
-We count how many iterations our verification algorithm needs to synthesize a deterministic program and this result corresponds to the size of a synthesized program (i.e., the number of branches in the synthesized program). 
+We count how many iterations our algorithm needs to synthesize a deterministic program and this result corresponds to the size of a synthesized program (i.e., the number of conditional branches in the synthesized program). 
 <center>
 ![image](https://user-images.githubusercontent.com/11462215/53280317-a5969d00-36e6-11e9-86d7-0a13f31b1c57.png)
 </center>
