@@ -1,0 +1,13 @@
+sess has been restored from ../ddpg_chkp/car-platoon/continuous/8/400300200500400300200/model.chkp
+min reward: -1000
+sess has been saved to ../ddpg_chkp/car-platoon/continuous/8/400300200500400300200/final_model.chkp
+train run time: 0.383290052414 s
+load barrier from ../ddpg_chkp/car-platoon/continuous/8/400300200500400300200/shield.model
+load K from ../ddpg_chkp/car-platoon/continuous/8/400300200500400300200/K.model.npy
+load initial range to ../ddpg_chkp/car-platoon/continuous/8/400300200500400300200/initial_range.model.npy
+train_shield run time: 0.0355308055878 s
+---
+terminal error: 0.1
+sample_ep: 1000
+sample_steps: 2000
+---

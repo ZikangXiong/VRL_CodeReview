@@ -1,0 +1,61 @@
+sess has been restored from pendulum_continuous_change_l/retrain/1200901000900800/model.chkp
+min reward: -900
+sess has been saved to pendulum_continuous_change_l/retrain/1200901000900800/final_model.chkp
+train run time: 0.536510229111 s
+load barrier from pendulum_continuous_change_l/retrain/1200901000900800/shield.model
+load K from pendulum_continuous_change_l/retrain/1200901000900800/K.model.npy
+load initial range to pendulum_continuous_change_l/retrain/1200901000900800/initial_range.model.npy
+train_shield run time: 0.00218296051025 s
+Process: 1000/50000
+Process: 2000/50000
+Process: 3000/50000
+Process: 4000/50000
+Process: 5000/50000
+Process: 6000/50000
+Process: 7000/50000
+Process: 8000/50000
+Process: 9000/50000
+Process: 10000/50000
+Process: 11000/50000
+Process: 12000/50000
+Process: 13000/50000
+Process: 14000/50000
+Process: 15000/50000
+Process: 16000/50000
+Process: 17000/50000
+Process: 18000/50000
+Process: 19000/50000
+Process: 20000/50000
+Process: 21000/50000
+Process: 22000/50000
+Process: 23000/50000
+Process: 24000/50000
+Process: 25000/50000
+Process: 26000/50000
+Process: 27000/50000
+Process: 28000/50000
+Process: 29000/50000
+Process: 30000/50000
+Process: 31000/50000
+Process: 32000/50000
+Process: 33000/50000
+Process: 34000/50000
+Process: 35000/50000
+Process: 36000/50000
+Process: 37000/50000
+Process: 38000/50000
+Process: 39000/50000
+Process: 40000/50000
+Process: 41000/50000
+Process: 42000/50000
+Process: 43000/50000
+Process: 44000/50000
+Process: 45000/50000
+Process: 46000/50000
+Process: 47000/50000
+Process: 48000/50000
+Process: 49000/50000
+Process: 50000/50000
+Process: 50000/50000
+average angle difference:0.0
+average distance difference:4.72706662253

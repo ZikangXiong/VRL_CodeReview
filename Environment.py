@@ -3,9 +3,6 @@ import numpy as np
 
 #Environment for linear systems
 class Environment:
-  '''
-    Environment for DDPG Algorithm.
-  '''
   def __init__(self, A, B, u_min, u_max, s_min, s_max, x_min, x_max, Q, R, \
                 continuous=False, rewardf=None, timestep = 0.01, unsafe=False, \
                 unsafe_property=None, multi_boundary=False, bad_reward=-900, terminal_err=0):
@@ -127,7 +124,6 @@ class Environment:
           reward = self.bad_reward
       # Good Terminal
       if np.abs(reward) < self.terminal_err:
-        print "good terminal"
         terminal = True
 
 

@@ -1,0 +1,8 @@
+sess has been restored from ../ddpg_chkp/oscillator/18/perfect/240200280240200/model.chkp
+min reward: -900
+sess has been saved to ../ddpg_chkp/oscillator/18/perfect/240200280240200/final_model.chkp
+train run time: 0.170630931854 s
+Test step: 5000
+,            Sample Size: 5000
+            starting from shield state, fail time: 0.0
+,             ratio: 0.0            
