@@ -1,0 +1,40 @@
+sess has been restored from ../ddpg_chkp/perfect_model/selfdriving/64646464/model.chkp
+min reward: -100
+sess has been saved to ../ddpg_chkp/perfect_model/selfdriving/64646464/final_model.chkp
+train run time: 0.136532068253 s
+912/5000: start from [[-6.13126329]
+ [-7.99232829]
+ [-0.05471209]
+ [ 0.42110997]], terminal at step 605
+[[-3.05874051]
+ [-3.09567329]
+ [ 0.47093166]
+ [ 0.85134246]]
+1696/5000: start from [[-6.11228867]
+ [-7.38142214]
+ [ 0.35900646]
+ [ 0.3912366 ]], terminal at step 559
+[[-3.09999916]
+ [-2.90100069]
+ [ 0.47057268]
+ [ 0.84864357]]
+3593/5000: start from [[-6.06351676]
+ [-7.62956064]
+ [ 0.20495773]
+ [ 0.21942767]], terminal at step 582
+[[-3.01442225]
+ [-3.09440321]
+ [ 0.4684201 ]
+ [ 0.85051953]]
+4641/5000: start from [[-6.02707995]
+ [-7.52065026]
+ [ 0.26163774]
+ [ 0.62127117]], terminal at step 553
+[[-3.09924876]
+ [-2.90582281]
+ [ 0.47068041]
+ [ 0.84893788]]
+Test step: 5000
+,            Sample Size: 5000
+            starting from shield state, fail time: 4.0
+,             ratio: 0.0008            

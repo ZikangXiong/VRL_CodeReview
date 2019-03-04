@@ -1,0 +1,11 @@
+sess has been restored from cartpole_change_l/retrain/1200901000900800/model.chkp
+min reward: -900
+sess has been saved to cartpole_change_l/retrain/1200901000900800/final_model.chkp
+train run time: 0.528302907944 s
+load K from cartpole_change_l/retrain/1200901000900800/K.model.npy
+load initial range to cartpole_change_l/retrain/1200901000900800/initial_range.model.npy
+mcais execution time: 14.0345790386 secs
+train_shield run time: 14.0354540348 s
+Process: 8/8
+average angle difference:45.0
+average distance difference:0.513565924604
