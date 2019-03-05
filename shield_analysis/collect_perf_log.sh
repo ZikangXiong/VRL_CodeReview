@@ -3,7 +3,7 @@
 # @Last Modified by:   Zikang Xiong
 # @Last Modified time: 2019-03-04 14:50:01
 
-python 4-car-platoon/4-car-platoon.py > 4-car-platoon/4-car-platoon_perf.log
+python 4-car-platoon/4-car-platoon_perf.py > 4-car-platoon/4-car-platoon_perf.log
 python 8-car-platoon_continuous/8-car-platoon_continuous_perf.py > 8-car-platoon_continuous/8-car-platoon_continuous_perf.log
 python biology/biology_perf.py > biology/biology_perf.log
 python cartpole_continuous/cartpole_continuous_perf.py > cartpole_continuous/cartpole_continuous_perf.log

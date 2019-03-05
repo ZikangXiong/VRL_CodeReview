@@ -31,7 +31,7 @@ def distance_between_linear_function_and_neural_network(env, actor, K, terminal_
 			sum_steps += 1
 			u1 = actor.predict(np.reshape(np.array(xk), (1, actor.s_dim)))
 			u2 = K.dot(xk)
-			env.step(u1)
+			env.step(np.reshape(u1, (actor.a_dim, 1)))
 			distance += np.linalg.norm(u1-u2)
 			ep_distance += np.linalg.norm(u1-u2)
 
@@ -68,7 +68,7 @@ def neural_network_performance(env, actor, terminal_err=0.01, rounds=10, steps=5
 				break
 			sum_steps += 1
 			u = actor.predict(np.reshape(np.array(xk), (1, actor.s_dim)))
-			env.step(u)
+			env.step(np.reshape(u, (actor.a_dim, 1)))
 
 	env.terminal_err = temp_env_ter_err
 	if success_rounds == 0:
