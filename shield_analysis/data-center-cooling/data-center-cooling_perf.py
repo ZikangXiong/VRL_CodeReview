@@ -44,7 +44,7 @@ def cooling (learning_method, number_of_rollouts, simulation_steps, learning_epo
            'random_seed': 6553,
            'tau': 0.005,
            'model_path': train_dir+"model.chkp",
-           'enable_test': True, 
+           'enable_test': False, 
            'test_episodes': 2,
            'test_episodes_len': 5000}
   actor = DDPG(env, args)
