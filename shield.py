@@ -1,5 +1,5 @@
 import metrics
-from metrics import timeit
+from metrics import timeit, draw_K
 from main import *
 
 import os
@@ -300,6 +300,8 @@ class Shield(object):
         self.K = learn_polysys_shield(self.env.polyf, self.env.state_dim, self.env.action_dim, self.env.Q, self.env.R, x, eq_err,\
           learning_method, number_of_rollouts, simulation_steps, self.actor, rewardf=self.env.rewardf, \
           continuous=True, timestep=self.env.timestep, explore_mag = explore_mag, step_size = step_size, coffset=coffset, bias=bias, without_nn_guide=without_nn_guide)
+        # x0 = self.env.reset()
+        # metrics.draw_K(self.env, self.K, 2000, x0)
 
         return self.K
 
