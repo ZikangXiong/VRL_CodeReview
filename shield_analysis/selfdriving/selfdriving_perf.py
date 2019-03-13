@@ -4,7 +4,7 @@
 # Email: zikangxiong@gmail.com
 # Date:   2018-11-06 12:23:39
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-03-04 14:33:18
+# Last Modified time: 2019-03-13 16:48:24
 # -------------------------------
 import sys
 sys.path.append("../")
@@ -15,6 +15,8 @@ from shield import Shield
 from Environment import PolySysEnvironment
 
 from DDPG import *
+
+from metrics import *
 
 # Show that there is an invariant that can prove the policy safe
 def selfdrive(learning_method, number_of_rollouts, simulation_steps, learning_eposides, critic_structure, actor_structure, train_dir, K=None):
@@ -142,19 +144,22 @@ def selfdrive(learning_method, number_of_rollouts, simulation_steps, learning_ep
   model_path = model_path+linear_func_model_name+'.npy'
 
   shield = Shield(env, actor, model_path=model_path, force_learning=False)
-  shield.train_polysys_shield(learning_method, number_of_rollouts, simulation_steps)
+  shield.train_polysys_shield(learning_method, number_of_rollouts, simulation_steps, explore_mag = 0.1, step_size = 0.1, without_nn_guide=False)
   # shield.test_shield(1000, 5000)
 
   ################# Metrics ######################
-  terminal_err = 0.1
+  # draw_actor(env, actor, 500)
+  # draw_K(env, shield.K_list[0], 500)
+  terminal_err = 1e-1
   sample_steps = 2000
   sample_ep = 1000
-  print "---\nterminal error: {}\nsample_ep: {}\nsample_steps: {}\n---".format(terminal_err, sample_ep, sample_steps)
+  measure_steps = 100
+  print "---\nterminal error: {}\nsample_ep: {}\nsample_steps: {}\nmeasure_steps: {}\n---".format(terminal_err, sample_ep, sample_steps, measure_steps)
   # dist_nn_lf = metrics.distance_between_linear_function_and_neural_network(env, actor, shield.K, terminal_err, sample_ep, sample_steps)
   # print "dist_nn_lf: ", dist_nn_lf
-  nn_perf = metrics.neural_network_performance(env, actor, terminal_err, sample_ep, sample_steps)
+  nn_perf = metrics.neural_network_performance_converge(env, actor, terminal_err, sample_ep, sample_steps, measure_steps)
   print "nn_perf", nn_perf
-  shield_perf = metrics.linear_function_performance(env, shield.K_list[0], terminal_err, sample_ep, sample_steps)
+  shield_perf = metrics.linear_function_performance_converge(env, shield.K_list[0], terminal_err, sample_ep, sample_steps, measure_steps)
   print "shield_perf", shield_perf
 
   actor.sess.close()
@@ -165,4 +170,4 @@ if __name__ == "__main__":
   # critic_structure = [int(i) for i in list(sys.argv[3].split(','))]
   # train_dir = sys.argv[4]
 
-  selfdrive("random_search", 100, 100, 0, [300, 200], [300, 250, 200], "../ddpg_chkp/selfdriving/300200300250200/")
+  selfdrive("random_search", 20, 100, 0, [300, 200], [300, 250, 200], "../ddpg_chkp/selfdriving/300200300250200/")

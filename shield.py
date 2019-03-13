@@ -301,7 +301,7 @@ class Shield(object):
           learning_method, number_of_rollouts, simulation_steps, self.actor, rewardf=self.env.rewardf, \
           continuous=True, timestep=self.env.timestep, explore_mag = explore_mag, step_size = step_size, coffset=coffset, bias=bias, without_nn_guide=without_nn_guide)
         # x0 = self.env.reset()
-        # metrics.draw_K(self.env, self.K, 2000, x0)
+        # metrics.draw_K(self.env, self.K, 500, x0)
 
         return self.K
 
@@ -442,12 +442,12 @@ class Shield(object):
       self.K_list = [K for K in loadK(model_path+"/K.model.npy")]
       print "load K from "+model_path+"/K.model.npy"
       self.initial_range_list = [initr for initr in loadK(model_path+"/initial_range.model.npy")] 
-      print "load initial range to "+model_path+"/initial_range.model.npy"
+      print "load initial range from "+model_path+"/initial_range.model.npy"
     else:
       self.K_list = [K for K in loadK(model_path+"/K.model.npy")]
       print "load K from "+model_path+"/K.model.npy"
       self.initial_range_list = [initr for initr in loadK(model_path+"/initial_range.model.npy")] 
-      print "load initial range to "+model_path+"/initial_range.model.npy"
+      print "load initial range from "+model_path+"/initial_range.model.npy"
       for K in self.K_list:
           O_inf = verify_controller(np.asarray(self.env.A), np.asarray(self.env.B), np.asarray(K), self.env.x_min, self.env.x_max, self.env.u_min, self.env.u_max)
           self.O_inf_list.append(O_inf)
