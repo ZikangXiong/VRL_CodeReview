@@ -3,8 +3,9 @@ sys.path.append("../")
 
 from main import *
 from shield import Shield
-from Environment import PolySysEnvironment
+from Environment import Environment
 from DDPG import *
+from metrics import *
 
 def lanekeep (learning_method, number_of_rollouts, simulation_steps, learning_eposides, actor_structure, critic_structure, train_dir):
   v0 = 27.7
@@ -42,7 +43,30 @@ def lanekeep (learning_method, number_of_rollouts, simulation_steps, learning_ep
     f.append("((1.59*98800-1.11*133000)/(2315.3*27.7))*x[2] + (-1*(1.11*1.11*133000 + 1.59*1.59*98800)/(2315.3*27.7))*x[4] + (1.11*133000/2315.3)*{} + d[4]".format(kstr[1]))
     return f
 
+  A = [
+    [0, 1, 27.7, 0],
+    [0, (-1*(133000+98800)/(1650*27.7)), 0, ((1.59*98800-1.11*133000)/(1650*27.7)-27.7)],
+    [0, 0, 0, 1],
+    [0, ((1.59*98800-1.11*133000)/(2315.3*27.7)), 0, (-1*(1.11*1.11*133000 + 1.59*1.59*98800)/(2315.3*27.7))]]
+  B = [
+    [0, 0], 
+    [(133000/1650), 0],
+    [0, 0],
+    [0, (1.11*133000/2315.3)]]
+
   h = 0.01
+
+  dim = len(A[0])
+
+  # Discretize the system using matrix exponential
+  A_conti = np.array(A)
+  B_conti = np.array(B)
+
+  #A = np.matrix(la.expm(A_conti * h))
+  #B = np.matrix(np.dot( np.dot(np.linalg.pinv(A_conti), (A - np.eye(dim))), B_conti))
+
+  A = A_conti*h + np.eye(A_conti.shape[0])
+  B = B_conti*h
 
   # amount of Gaussian noise in dynamics
   eq_err = 1e-2
@@ -50,19 +74,9 @@ def lanekeep (learning_method, number_of_rollouts, simulation_steps, learning_ep
   #intial state space
   s_min = np.array([[ -0.1],[ -0.1], [-0.1], [ -0.1]])
   s_max = np.array([[  0.1],[  0.1], [ 0.1], [  0.1]])
-  # S0 = Polyhedron.from_bounds(s_min, s_max)
-
-  #sample an initial condition for system
-  # x0 = np.matrix([
-  #     [random.uniform(s_min[0, 0], s_max[0, 0])], 
-  #     [random.uniform(s_min[1, 0], s_max[1, 0])],
-  #     [random.uniform(s_min[2, 0], s_max[2, 0])],
-  #     [random.uniform(s_min[3, 0], s_max[3, 0])]
-  #   ])
-  # print ("Sampled initial state is:\n {}".format(x0))
 
   Q = np.matrix("1 0 0 0; 0 1 0 0 ; 0 0 1 0; 0 0 0 1")
-  R = np.matrix(".0005 0; 0 .0005")
+  R = np.matrix("1 0; 0 1")
 
   #user defined unsafety condition
   def unsafe_eval(x):
@@ -86,40 +100,57 @@ def lanekeep (learning_method, number_of_rollouts, simulation_steps, learning_ep
       return -1
     return 0 
 
-  # Use sheild to directly learn a linear controller
-  u_min = np.array([[-1]])
-  u_max = np.array([[1]])
-  env = PolySysEnvironment(f, f_to_str,rewardf, testf, unsafe_string, ds, us, Q, R, s_min, s_max, u_max=u_max, u_min = u_min, disturbance_x_min=disturbance_x_min, disturbance_x_max=disturbance_x_max, timestep=h)
+  u_min = np.array([[-1.], [-1.]])
+  u_max = np.array([[ 1.], [ 1.]])
+
+  x_min = np.array([[-0.9],[-2],[-2],[-2]])
+  x_max = np.array([[ 0.9],[ 2],[ 2],[ 2]])
+
+  env = Environment(A, B, u_min, u_max, s_min, s_max, x_min, x_max, Q, R, continuous=False)
 
   args = { 'actor_lr': 0.0001,
-       'critic_lr': 0.001,
-       'actor_structure': actor_structure,
-       'critic_structure': critic_structure, 
-       'buffer_size': 1000000,
-       'gamma': 0.99,
-       'max_episode_len': 1,
-       'max_episodes': learning_eposides,
-       'minibatch_size': 64,
-       'random_seed': 6553,
-       'tau': 0.005,
-       'model_path': train_dir+"model.chkp",
-       'enable_test': True, 
-       'test_episodes': 1,
-       'test_episodes_len': 1}
-
-  actor =  DDPG(env, args)
-  #actor_boundary(env, actor, 1000, 100)
+           'critic_lr': 0.001,
+           'actor_structure': actor_structure,
+           'critic_structure': critic_structure, 
+           'buffer_size': 1000000,
+           'gamma': 0.99,
+           'max_episode_len': 10,
+           'max_episodes': learning_eposides,
+           'minibatch_size': 64,
+           'random_seed': 6553,
+           'tau': 0.005,
+           'model_path': train_dir+"model.chkp",
+           'enable_test': False, 
+           'test_episodes': 1000,
+           'test_episodes_len': 1000}
+  actor = DDPG(env, args)
+  # draw_actor(env, actor, 2000)
 
   model_path = os.path.split(args['model_path'])[0]+'/'
   linear_func_model_name = 'K.model'
   model_path = model_path+linear_func_model_name+'.npy'
-
   shield = Shield(env, actor, model_path=model_path, force_learning=False)
-  shield.train_polysys_shield(learning_method, number_of_rollouts, simulation_steps, eq_err=eq_err, explore_mag=0.1, step_size=0.1)
-  shield.test_shield(1000, 1000, mode="single")
-  # shield.test_shield(100, 1000, mode="all")
+  shield.train_shield(learning_method, number_of_rollouts, simulation_steps, explore_mag = 0.1, step_size = 0.1, without_nn_guide=False)
+  # K = np.array([[-4.21528005, -0.55237926, -9.45587692, -0.50038062],
+  #               [-2.04298819,  0.50994964,  3.29331539, -1.02047674]])
+  # draw_K (env, shield.K_list[0], 2000)
+
+  ################# Metrics ######################
+  # actor_boundary(env, actor, 2000, 1000)
+  # shield.shield_boundary(2000, 1000)
+  terminal_err = 1e-1
+  sample_steps = 2000
+  sample_ep = 1000
+  measure_steps = 100
+  print "---\nterminal error: {}\nsample_ep: {}\nsample_steps: {}\nmeasure_steps: {}\n---".format(terminal_err, sample_ep, sample_steps, measure_steps)
+  # dist_nn_lf = metrics.distance_between_linear_function_and_neural_network(env, actor, shield.K, terminal_err, sample_ep, sample_steps)
+  # print "dist_nn_lf: ", dist_nn_lf
+  nn_perf = metrics.neural_network_performance_converge(env, actor, terminal_err, sample_ep, sample_steps, measure_steps)
+  print "nn_perf", nn_perf
+  shield_perf = metrics.linear_function_performance_converge(env, shield.K_list[0], terminal_err, sample_ep, sample_steps, measure_steps)
+  print "shield_perf", shield_perf
 
 # K = np.array([[-4.21528005, -0.55237926, -9.45587692, -0.50038062],
 #  [-2.04298819,  0.50994964,  3.29331539, -1.02047674]])
 
-lanekeep("random_search", 200, 500, 0, [240, 200], [280, 240, 200], "../ddpg_chkp/lanekeeping/240200280240200/")
+lanekeep("random_search", 10, 500, 0, [240, 200], [280, 240, 200], "../ddpg_chkp/lanekeeping/240200280240200/")
