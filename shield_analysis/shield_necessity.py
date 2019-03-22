@@ -4,7 +4,7 @@
 # Email: zikangxiong@gmail.com
 # Date:   2019-02-10 15:40:07
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2019-02-13 02:04:35
+# Last Modified time: 2019-03-22 18:08:35
 # -------------------------------
 import numpy as np
 import random
@@ -42,8 +42,16 @@ def test_necessity(env, actor, shield_state_list):
                 break
         now += 1
 
-    print "Test step: {}\n, \
-           Sample Size: {}\n\
-            starting from shield state, fail time: {}\n, \
-            ratio: {}\
-            ".format(TEST_STEP, total, fail_time, fail_time/total)
+    print "Test step: {}\n, Sample Size: {}\nstarting from shield state, fail time: {}\n, ratio: {}".format(TEST_STEP, total, fail_time, fail_time/total)
+
+def test_necessity_extension(shield, fail_list, success_list):
+    """Test the shield calls of 
+    the initial states that will not fail 
+    and the initial states that will fail
+    
+    Args:
+        shield (Shield): Shield
+    """
+    shield.test_shield(fail_list)
+    shield.test_shield(success_list)
+

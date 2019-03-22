@@ -603,7 +603,7 @@ class Shield(object):
       
 
   @timeit
-  def test_shield(self, test_ep=1, test_step=5000, x0=None, mode="single", loss_compensation=0, shield_combo=1, mute=False):
+  def test_shield(self, test_ep=1, test_step=5000, x0_list=None, mode="single", loss_compensation=0, shield_combo=1, mute=False):
     """test if shield works
     
     Args:
@@ -618,46 +618,84 @@ class Shield(object):
     fail_list = []
     self.shield_count = 0
     combo_remain = 0
-
-    for ep in xrange(test_ep):
-      if x0 is not None:
-        x = self.env.reset(x0)
-      else:
+        
+    if x0_list == None:
+      for ep in xrange(test_ep):
         x = self.env.reset()
-      init_x = x
-      for i in xrange(test_step):
-        u = np.reshape(self.actor.predict(np.reshape(np.array(x), \
-            (1, self.actor.s_dim))), (self.actor.a_dim, 1))
-        
-        # safe or not
-        if self.detactor(x, u, mode=mode, loss_compensation=loss_compensation) or (combo_remain > 0):
-          if combo_remain == 0:
-            combo_remain = shield_combo
-
-          u = self.call_shield(x, mute=mute)
-          if not mute:
-            print "!shield at step {}".format(i)
+        init_x = x
+        for i in xrange(test_step):
+          u = np.reshape(self.actor.predict(np.reshape(np.array(x), \
+              (1, self.actor.s_dim))), (self.actor.a_dim, 1))
           
-          combo_remain -= 1
+          # safe or not
+          if self.detactor(x, u, mode=mode, loss_compensation=loss_compensation) or (combo_remain > 0):
+            if combo_remain == 0:
+              combo_remain = shield_combo
 
-        # step
-        x, _, terminal = self.env.step(u)
+            u = self.call_shield(x, mute=mute)
+            if not mute:
+              print "!shield at step {}".format(i)
+            
+            combo_remain -= 1
 
-        # success or fail
-        if terminal:
-          if np.sum(np.power(self.env.xk, 2)) < self.env.terminal_err:
+          # step
+          x, _, terminal = self.env.step(u)
+
+          # success or fail
+          if terminal:
+            if np.sum(np.power(self.env.xk, 2)) < self.env.terminal_err:
+              success_time += 1
+            else:
+              fail_time += 1
+              fail_list.append((init_x, x))
+            break
+          
+          if i == test_step-1:
             success_time += 1
-          else:
-            fail_time += 1
-            fail_list.append((init_x, x))
-          break
-        
-        if i == test_step-1:
-          success_time += 1
 
-      print "----epoch: {} ----".format(ep)
-      print 'initial state:\n', init_x, '\nterminal state:\n', x, '\nlast action:\n', self.env.last_u
-      print "----step: {} ----".format(i)
+        print "----epoch: {} ----".format(ep)
+        print 'initial state:\n', init_x, '\nterminal state:\n', x, '\nlast action:\n', self.env.last_u
+        print "----step: {} ----".format(i)
+    # x0_list is not None
+    else:
+      ep = 0
+      for x0 in x0_list:
+        x = self.env.reset(x0)
+        init_x = x
+        for i in xrange(test_step):
+          u = np.reshape(self.actor.predict(np.reshape(np.array(x), \
+              (1, self.actor.s_dim))), (self.actor.a_dim, 1))
+          
+          # safe or not
+          if self.detactor(x, u, mode=mode, loss_compensation=loss_compensation) or (combo_remain > 0):
+            if combo_remain == 0:
+              combo_remain = shield_combo
+
+            u = self.call_shield(x, mute=mute)
+            if not mute:
+              print "!shield at step {}".format(i)
+            
+            combo_remain -= 1
+
+          # step
+          x, _, terminal = self.env.step(u)
+
+          # success or fail
+          if terminal:
+            if np.sum(np.power(self.env.xk, 2)) < self.env.terminal_err:
+              success_time += 1
+            else:
+              fail_time += 1
+              fail_list.append((init_x, x))
+            break
+          
+          if i == test_step-1:
+            success_time += 1
+
+        print "----epoch: {} ----".format(ep)
+        ep += 1
+        print 'initial state:\n', init_x, '\nterminal state:\n', x, '\nlast action:\n', self.env.last_u
+        print "----step: {} ----".format(i)
   
     print 'Success: {}, Fail: {}'.format(success_time, fail_time)
     print '#############Fail List:###############'
