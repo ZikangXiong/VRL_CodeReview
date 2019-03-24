@@ -131,4 +131,4 @@ def oscillator(learning_method, number_of_rollouts, simulation_steps, learning_e
   # shield.test_shield(100, 1000, mode="all")
   actor.sess.close()
   
-oscillator("random_search", 200, 200, 0, [240, 200], [280, 240, 200], "../ddpg_chkp/oscillator/18/perfect/240200280240200/")
+oscillator("random_search", 200, 200, 0, [240, 200], [280, 240, 200], "../ddpg_chkp/oscillator/18/240200280240200/")

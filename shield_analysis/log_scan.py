@@ -33,7 +33,6 @@ def log_scan(log_path, scan_type="ss"):
     elif scan_type == "fis":
         fail_list_parttern = r"###\n(.+?)\ntest run time:"
         fail_list_prog = re.compile(fail_list_parttern, flags=re.DOTALL)
-        print fail_list_prog.findall(log_buffer)
         fail_list = fail_list_prog.findall(log_buffer)[0]
         state_pattern = r"initial state: \n(.+?\]\])"
         state_prog = re.compile(state_pattern, flags=re.DOTALL)
@@ -80,4 +79,4 @@ def read_scan(log_scan_path):
         ret_list = pickle.load(fp)
     return ret_list
 
-log_scan("oscillator18/oscillator18.log", "fis")
+log_scan("oscillator18/oscillator18.log", "sis")

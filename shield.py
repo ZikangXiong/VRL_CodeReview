@@ -659,6 +659,7 @@ class Shield(object):
     # x0_list is not None
     else:
       ep = 0
+      test_ep = len(x0_list)
       for x0 in x0_list:
         x = self.env.reset(x0)
         init_x = x

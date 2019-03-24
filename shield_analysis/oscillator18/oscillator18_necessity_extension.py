@@ -121,9 +121,17 @@ def oscillator(learning_method, number_of_rollouts, simulation_steps, learning_e
        'test_episodes_len': 1000}
   actor =  DDPG(env, args=args)
 
-  shield_list = read_scan("oscillator18/oscillator18.log_ret.pkl")
-  test_necessity_(env, actor, shield_list)
+  ############ Shield ####################
+  model_path = os.path.split(args['model_path'])[0]+'/'
+  linear_func_model_name = 'K.model'
+  model_path = model_path+linear_func_model_name+'.npy'
+
+  shield = Shield(env, actor, model_path=model_path, force_learning=False)
+  shield.train_polysys_shield(learning_method, number_of_rollouts, simulation_steps, eq_err=eq_err, explore_mag = 0.4, step_size = 0.5)
+  fail_list = read_scan("oscillator18/oscillator18.log_fis_ret.pkl")
+  success_list = read_scan("oscillator18/oscillator18.log_sis_ret.pkl")
+  test_necessity_extension(shield, fail_list, success_list)
 
   actor.sess.close()
   
-oscillator("random_search", 200, 200, 0, [240, 200], [280, 240, 200], "../ddpg_chkp/oscillator/18/perfect/240200280240200/")
+oscillator("random_search", 200, 200, 0, [240, 200], [280, 240, 200], "../ddpg_chkp/oscillator/18/240200280240200/")
