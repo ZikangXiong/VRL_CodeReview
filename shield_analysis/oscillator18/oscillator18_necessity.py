@@ -121,7 +121,7 @@ def oscillator(learning_method, number_of_rollouts, simulation_steps, learning_e
        'test_episodes_len': 1000}
   actor =  DDPG(env, args=args)
 
-  shield_list = read_scan("oscillator18/oscillator18.log_ret.pkl")
+  shield_list = read_scan("oscillator18/unsafe_osc.log_ss_ret.pkl")
   test_necessity(env, actor, shield_list)
 
   actor.sess.close()
