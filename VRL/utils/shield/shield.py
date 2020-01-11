@@ -4,6 +4,7 @@ from main import *
 
 import os
 
+shield_testing_on_x_ep_len = 10
 
 class Shield(object):
 
