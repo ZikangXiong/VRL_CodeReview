@@ -4,7 +4,7 @@
 # Email: zikangxiong@gmail.com
 # Date:   2020-01-10 12:06:05
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2020-01-10 21:01:17
+# Last Modified time: 2020-01-11 12:19:40
 # -------------------------------
 from setuptools import setup, find_packages
 
@@ -32,7 +32,9 @@ setup(
 
     install_requires=[
         'tensorflow>=1.13.0',
-        'tflearn>=0.3.2'
+        'tflearn>=0.3.2', 
+        'numpy',
+        'scipy',
     ]
 )
 

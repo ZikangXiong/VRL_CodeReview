@@ -4,11 +4,11 @@
 # Email: zikangxiong@gmail.com
 # Date:   2020-01-10 22:07:19
 # Last Modified by:   Zikang Xiong
-# Last Modified time: 2020-01-10 22:12:03
+# Last Modified time: 2020-01-13 15:00:21
 # -------------------------------
 import numpy as np
 
-def policy_gradient_adam_linear_policy(A,B,Q,R,x0,eq_err,N,T,x_min=None,x_max=None,continuous=False,timestep=.01,rewardf=None,
+def policy_gradient_adam_linear_policy(env,x0,eq_err,N,T,x_min=None,x_max=None,continuous=False,timestep=.01,rewardf=None,
     explore_mag = 0.04, step_size = 0.05, batch_size = 8,
     beta1=0.9, beta2=0.999, epsilon=1.0e-8, coffset=None,bias=False):
   '''
@@ -19,7 +19,6 @@ def policy_gradient_adam_linear_policy(A,B,Q,R,x0,eq_err,N,T,x_min=None,x_max=No
       magnitude of noise in dynamics eq_err
       Number of rollouts N
       Time Horizon T
-
       hyperparameters
          explore_mag magnitude of the noise to explore
          step_size
@@ -31,11 +30,11 @@ def policy_gradient_adam_linear_policy(A,B,Q,R,x0,eq_err,N,T,x_min=None,x_max=No
   '''
 
   def f (x, u):
-    return A.dot(x)+B.dot(u)
+    return env.A.dot(x)+env.B.dot(u)
 
-  d,p = B.shape
+  d,p = env.B.shape
 
-  return policy_gradient_helper(f, d, p, Q, R, x0, eq_err, N, T, x_min, x_max, continuous, timestep, rewardf, 
+  return policy_gradient_helper(f, d, p, env.Q, env.R, x0, eq_err, N, T, x_min, x_max, continuous, timestep, rewardf, 
     explore_mag, step_size, batch_size, 
     beta1, beta2, epsilon, coffset, bias)
 

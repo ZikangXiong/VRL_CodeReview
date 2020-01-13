@@ -466,11 +466,13 @@ def bounded_z3(x0, initial_size, Theta, K, A, B, target, safe, avoid_list, avoid
         return True
 
 
-def verify_controller_z3(x0, Theta, verification_oracle, learning_oracle, draw_oracle, continuous):
+#TODO: rename arguments to make meaning more clear
+def verify_controller_z3(Theta, learning_oracle, draw_oracle, verification_oracle, continuous):
     if continuous:
-        x_dim = len(x0)
         print("Dimension of the system: {}".format(x_dim))
         (s_min, s_max) = Theta
+        x_dim = len(s_max)
+        x0 = np.random.uniform(s_min, s_max)
         # 2d array target, safe, Theta is simplied to 1d
         Theta = d2tod1(Theta)
 
@@ -622,9 +624,10 @@ def verify_controller_z3(x0, Theta, verification_oracle, learning_oracle, draw_o
               "; Theta_has_been_covered: " + str(Theta_has_been_covered))
         return Theta_has_been_covered, resultList
     else:
-        x_dim = len(x0)
         print("Dimension of the system: {}".format(x_dim))
         (s_min, s_max) = Theta
+        x_dim = len(s_max)
+        x0 = np.random.uniform(s_min, s_max)
         # 2d array target, safe, Theta is simplied to 1d
         Theta = d2tod1(Theta)
 
@@ -641,6 +644,7 @@ def verify_controller_z3(x0, Theta, verification_oracle, learning_oracle, draw_o
         initial_size = np.array(
             [max(s_max[i, 0] - x0[i, 0], x0[i, 0] - s_min[i, 0]) for i in range(x_dim)])
 
+        resultList = []
         while((not Theta_has_been_covered) and number_of_steps_initial_size_has_been_halved < max_decrease_steps and num_iters < max_num_iters):
             num_iters = num_iters + 1
             print(("At {} iteration work on the input:\n {}".format(num_iters, x0)))
@@ -663,7 +667,7 @@ def verify_controller_z3(x0, Theta, verification_oracle, learning_oracle, draw_o
                     break
 
             print(("intial_size: {}".format(initial_size)))
-            vresult = verification_oracle(x0, initial_size, Theta, K)
+            vresult, vinv = verification_oracle(x0, initial_size, Theta, K)
 
             # The K may do better than what is constrained by initial_size
             # l_vresult = vresult
@@ -690,6 +694,7 @@ def verify_controller_z3(x0, Theta, verification_oracle, learning_oracle, draw_o
                 number_of_steps_initial_size_has_been_halved = number_of_steps_initial_size_has_been_halved + 1
                 draw = False  # Work again on the sample counterexample so there is no need to redraw a picture
             else:
+                resultList.append((x0, initial_size, vinv, K))
                 cover = []
                 if type(initial_size) is np.ndarray:
                     for i in range(len(x0)):
@@ -713,7 +718,7 @@ def verify_controller_z3(x0, Theta, verification_oracle, learning_oracle, draw_o
 
         print("Number of iterations: " + str(num_iters) +
               "; Theta_has_been_covered: " + str(Theta_has_been_covered))
-        return Theta_has_been_covered
+        return Theta_has_been_covered, resultList
 
 
 import re
