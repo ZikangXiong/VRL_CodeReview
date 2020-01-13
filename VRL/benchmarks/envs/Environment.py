@@ -95,8 +95,8 @@ class Environment:
     else:
       self.xk = f(self.xk, uk)
 
-    # print self.xk
-    # print uk
+    # print(self.xk)
+    # print(uk)
 
     return self.observation()
 
@@ -127,7 +127,7 @@ class Environment:
           reward = self.bad_reward
       # Good Terminal
       if np.abs(reward) < self.terminal_err:
-        print "good terminal"
+        print("good terminal")
         terminal = True
 
 
@@ -240,8 +240,8 @@ class PolySysEnvironment:
     else:
       self.xk = f(self.xk, uk)
 
-    # print self.xk
-    # print uk
+    # print(self.xk)
+    # print(uk)
 
     return self.observation()
 
