@@ -710,9 +710,10 @@ def learn_shield(A, B, Q, R, x0, eq_err, learning_method, number_of_rollouts, si
           distance is measured by L1 distance, np.abs(actor.predict(x) - u)
           u, Q, and R are useless here, reserved for the interface design.
         """
+
         sim_score = 0 if actor is None else - \
             np.matrix(
-                [[np.sum(np.abs(actor.predict(np.reshape(x, (-1, actor.s_dim))) - u))]])
+                [[np.sum(np.abs(actor.predict(np.reshape(x, (-1, A.shape[-1]))) - u))]])
         safe_score = 0 if actor is not None or rewardf is None else rewardf(
             x, Q, u, R)
         return sim_score + safe_score
@@ -805,7 +806,13 @@ class SelfDefinedNN:
 
             i += 1
 
-        return h if self.u_max is None else h * self.u_max
+
+        # try:
+        #   h*self.u_max
+        # except Exception:
+        #   import pdb
+        #   pdb.set_trace()
+        return h if self.u_max is None else np.array(h) * self.u_max
 
     def relu(self, x):
         return np.maximum(0, x)
@@ -823,7 +830,7 @@ class SelfDefinedNN:
         epsilon = np.cast[np.float32](epsilon)
         x_hat = (x - mean) / np.sqrt(variance + epsilon)
 
-        return x_hat * gamma + beta
+        return np.array(x_hat) * gamma + beta
 
     @classmethod
     def load(cls, model_path):
