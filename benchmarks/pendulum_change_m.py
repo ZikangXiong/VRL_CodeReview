@@ -9,7 +9,7 @@ from Environment import Environment
 import argparse
 
 def pendulum(learning_eposides, critic_structure, actor_structure, train_dir, learning_method, number_of_rollouts, simulation_steps,\
-            nn_test=False, retrain_shield=False, shield_test=False, test_episodes=100, retrain_nn=False):
+            nn_test=False, retrain_shield=False, shield_test=False, test_episodes=100, retrain_nn=False, self_defined_nn_path=None):
   
   m = 1.17
   l = 1.
@@ -74,7 +74,12 @@ def pendulum(learning_eposides, critic_structure, actor_structure, train_dir, le
              'test_episodes': test_episodes,
              'test_episodes_len': 3800}
 
-  actor = DDPG(env, args)
+  if self_defined_nn_path is not None:
+    actor = SelfDefinedNN.load(self_defined_nn_path)
+    if nn_test:
+      test(env, actor, args, None)
+  else:
+    actor = DDPG(env, args)
   
   #################### Shield #################
   model_path = os.path.split(args['model_path'])[0]+'/'
@@ -89,7 +94,8 @@ def pendulum(learning_eposides, critic_structure, actor_structure, train_dir, le
   if shield_test:
     shield.test_shield(test_episodes, 3800, mode="single")
 
-  actor.sess.close()
+  if hasattr(actor, "sess"):
+    actor.sess.close()
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Running Options')
@@ -98,12 +104,14 @@ if __name__ == "__main__":
   parser.add_argument('--shield_test', action="store_true", dest="shield_test")
   parser.add_argument('--test_episodes', action="store", dest="test_episodes", type=int)
   parser.add_argument('--retrain_nn', action="store_true", dest="retrain_nn")
+  parser.add_argument('--self_defined_nn_path', action="store", type=str, default=None, dest="self_defined_nn_path")
   parser_res = parser.parse_args()
   nn_test = parser_res.nn_test
   retrain_shield = parser_res.retrain_shield
   shield_test = parser_res.shield_test
   test_episodes = parser_res.test_episodes if parser_res.test_episodes is not None else 100
   retrain_nn = parser_res.retrain_nn
+  self_defined_nn_path = parser_res.self_defined_nn_path
 
   pendulum(0, [1200,900], [1000,900,800], "ddpg_chkp/perfect_model/pendulum/change_m/", "random_search", 100, 2000, \
-    nn_test=nn_test, retrain_shield=retrain_shield, shield_test=shield_test, test_episodes=test_episodes, retrain_nn=retrain_nn) 
+    nn_test=nn_test, retrain_shield=retrain_shield, shield_test=shield_test, test_episodes=test_episodes, retrain_nn=retrain_nn, self_defined_nn_path=self_defined_nn_path) 

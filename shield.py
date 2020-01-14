@@ -625,7 +625,7 @@ class Shield(object):
       init_x = x
       for i in xrange(test_step):
         u = np.reshape(self.actor.predict(np.reshape(np.array(x), \
-            (1, self.actor.s_dim))), (self.actor.a_dim, 1))
+            (1, len(self.env.s_max)))), (len(self.env.u_max), 1))
         
         # safe or not
         if self.detactor(x, u, mode=mode, loss_compensation=loss_compensation) or (combo_remain > 0):
@@ -693,7 +693,7 @@ class Shield(object):
       self.env.reset()
       loss = 0
       for step in xrange(steps):
-        u = self.actor.predict(np.reshape(np.array(self.env.xk), (1, self.actor.s_dim)))
+        u = self.actor.predict(np.reshape(np.array(self.env.xk), (1, len(self.env.s_max))))
         grad += np.array(((K.dot(self.env.xk)-u).dot(self.env.xk.T)))[0]
         loss += np.sum(np.power((K.dot(self.env.xk)-u), 2))
         self.env.step(u)

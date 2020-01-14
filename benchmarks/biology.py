@@ -9,7 +9,7 @@ from DDPG import *
 import argparse
 
 def biology (learning_method, number_of_rollouts, simulation_steps, learning_eposides, critic_structure, actor_structure, train_dir,\
-            nn_test=False, retrain_shield=False, shield_test=False, test_episodes=100, retrain_nn=False):
+            nn_test=False, retrain_shield=False, shield_test=False, test_episodes=100, retrain_nn=False, self_defined_nn_path=None):
   # 10-dimension and 1-input system and 1-disturbance system
   ds = 3
   us = 2
@@ -107,7 +107,12 @@ def biology (learning_method, number_of_rollouts, simulation_steps, learning_epo
              'test_episodes': test_episodes,
              'test_episodes_len': 1000}
 
-  actor =  DDPG(env, args=args)
+  if self_defined_nn_path is not None:
+    actor = SelfDefinedNN.load(self_defined_nn_path)
+    if nn_test:
+      test(env, actor, args, None)
+  else:
+    actor = DDPG(env, args)
 
   #################### Shield #################
   model_path = os.path.split(args['model_path'])[0]+'/'
@@ -118,7 +123,8 @@ def biology (learning_method, number_of_rollouts, simulation_steps, learning_epo
   shield.train_polysys_shield(learning_method, number_of_rollouts, simulation_steps, eq_err=eq_err, explore_mag = 0.4, step_size = 0.5, aggressive=True, without_nn_guide=True, enable_jit=True)
   if shield_test:
     shield.test_shield(test_episodes, 1000, mode="single")
-  actor.sess.close()
+  if hasattr(actor, "sess"):
+    actor.sess.close()
   
 
 if __name__ == "__main__":
@@ -128,12 +134,14 @@ if __name__ == "__main__":
   parser.add_argument('--shield_test', action="store_true", dest="shield_test")
   parser.add_argument('--test_episodes', action="store", dest="test_episodes", type=int)
   parser.add_argument('--retrain_nn', action="store_true", dest="retrain_nn")
+  parser.add_argument('--self_defined_nn_path', action="store", type=str, default=None, dest="self_defined_nn_path")
   parser_res = parser.parse_args()
   nn_test = parser_res.nn_test
   retrain_shield = parser_res.retrain_shield
   shield_test = parser_res.shield_test
   test_episodes = parser_res.test_episodes if parser_res.test_episodes is not None else 100
   retrain_nn = parser_res.retrain_nn
+  self_defined_nn_path = parser_res.self_defined_nn_path
 
   biology ("random_search", 200, 500, 0, [240, 200], [280, 240, 200], "ddpg_chkp/biology/240200280240200/", \
-    nn_test=nn_test, retrain_shield=retrain_shield, shield_test=shield_test, test_episodes=test_episodes, retrain_nn=retrain_nn)
+    nn_test=nn_test, retrain_shield=retrain_shield, shield_test=shield_test, test_episodes=test_episodes, retrain_nn=retrain_nn, self_defined_nn_path=self_defined_nn_path)

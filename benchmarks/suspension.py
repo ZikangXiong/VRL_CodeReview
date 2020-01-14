@@ -8,7 +8,7 @@ from shield import Shield
 import argparse
 
 def suspension (learning_method, number_of_rollouts, simulation_steps,learning_eposides, critic_structure, actor_structure, train_dir,\
-            nn_test=False, retrain_shield=False, shield_test=False, test_episodes=100, retrain_nn=False):
+            nn_test=False, retrain_shield=False, shield_test=False, test_episodes=100, retrain_nn=False, self_defined_nn_path=None):
   A = np.matrix([[0.02366,-0.31922,0.0012041,-4.0292e-17],
     [0.25,0,0,0],
     [0,0.0019531,0,0],
@@ -68,7 +68,12 @@ def suspension (learning_method, number_of_rollouts, simulation_steps,learning_e
            'test_episodes': test_episodes,
            'test_episodes_len': 500}
 
-  actor = DDPG(env, args)
+  if self_defined_nn_path is not None:
+    actor = SelfDefinedNN.load(self_defined_nn_path)
+    if nn_test:
+      test(env, actor, args, None)
+  else:
+    actor = DDPG(env, args)
   
   #################### Shield #################
   model_path = os.path.split(args['model_path'])[0]+'/'
@@ -80,6 +85,9 @@ def suspension (learning_method, number_of_rollouts, simulation_steps,learning_e
   if shield_test:
     shield.test_shield(test_episodes, 500, mode="single")
 
+  if hasattr(actor, "sess"):
+    actor.sess.close()
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Running Options')
   parser.add_argument('--nn_test', action="store_true", dest="nn_test")
@@ -87,12 +95,14 @@ if __name__ == "__main__":
   parser.add_argument('--shield_test', action="store_true", dest="shield_test")
   parser.add_argument('--test_episodes', action="store", dest="test_episodes", type=int)
   parser.add_argument('--retrain_nn', action="store_true", dest="retrain_nn")
+  parser.add_argument('--self_defined_nn_path', action="store", type=str, default=None, dest="self_defined_nn_path")
   parser_res = parser.parse_args()
   nn_test = parser_res.nn_test
   retrain_shield = parser_res.retrain_shield
   shield_test = parser_res.shield_test
   test_episodes = parser_res.test_episodes if parser_res.test_episodes is not None else 100
   retrain_nn = parser_res.retrain_nn
+  self_defined_nn_path = parser_res.self_defined_nn_path
 
   suspension("random_search", 100, 50, 0, [240,200], [280,240,200], "ddpg_chkp/suspension/240200280240200/", \
-    nn_test=nn_test, retrain_shield=retrain_shield, shield_test=shield_test, test_episodes=test_episodes, retrain_nn=retrain_nn)
+    nn_test=nn_test, retrain_shield=retrain_shield, shield_test=shield_test, test_episodes=test_episodes, retrain_nn=retrain_nn, self_defined_nn_path=self_defined_nn_path)

@@ -380,8 +380,8 @@ def test(env, actor, args, actor_noise):
     init_s = s
     print "----ep: {} ----".format(ep)
     for i in xrange(args['test_episodes_len']):
-      a = actor.predict(np.reshape(np.array(s), (1, actor.s_dim))) #+ actor_noise()
-      s, r, terminal = env.step(a.reshape(actor.a_dim, 1))
+      a = actor.predict(np.reshape(np.array(s), (1, len(env.s_max)))) #+ actor_noise()
+      s, r, terminal = env.step(a.reshape(len(env.u_max), 1))
 
       if terminal:
         if i != args['test_episodes_len']-1:

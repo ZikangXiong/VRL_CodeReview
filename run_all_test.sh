@@ -1,0 +1,20 @@
+
+python benchmarks/satelite.py --nn_test --shield_test --test_episodes=1
+python benchmarks/dcmotor.py --nn_test --shield_test --test_episodes=1
+python benchmarks/tape.py --nn_test --shield_test --test_episodes=1
+python benchmarks/magnetic-pointer.py --nn_test --shield_test --test_episodes=1
+python benchmarks/suspension.py --nn_test --shield_test --test_episodes=1
+python benchmarks/biology.py --nn_test --shield_test --test_episodes=1
+python benchmarks/data-center-cooling.py --nn_test --shield_test --test_episodes=1
+python benchmarks/quadcopter.py --nn_test --shield_test --test_episodes=1
+python benchmarks/pendulum.py --nn_test --shield_test --test_episodes=1
+python benchmarks/cartpole.py --nn_test --shield_test --test_episodes=1
+python benchmarks/selfdriving.py --nn_test --shield_test --test_episodes=1
+python benchmarks/lanekeeping.py --nn_test --shield_test --test_episodes=1
+python benchmarks/4-car-platoon.py --nn_test --shield_test --test_episodes=1
+python benchmarks/8-car-platoon.py --nn_test --shield_test --test_episodes=1
+python benchmarks/oscillator.py --nn_test --shield_test --test_episodes=1
+python benchmarks/cartpole_change_l.py --nn_test --shield_test --test_episodes=1
+python benchmarks/pendulum_change_m.py --nn_test --shield_test --test_episodes=1
+python benchmarks/pendulum_change_l.py --nn_test --shield_test --test_episodes=1
+python benchmarks/selfdriving_obs.py --nn_test --shield_test --test_episodes=1

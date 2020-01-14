@@ -8,7 +8,7 @@ from shield import Shield
 import argparse
 
 def cartpole(learning_method, number_of_rollouts, simulation_steps, ddpg_learning_eposides, critic_structure, actor_structure, train_dir, \
-            nn_test=False, retrain_shield=False, shield_test=False, test_episodes=100, retrain_nn=False):
+            nn_test=False, retrain_shield=False, shield_test=False, test_episodes=100, retrain_nn=False, self_defined_nn_path=None):
   l = .22+0.15 # rod length is 2l
   m = (2*l)*(.006**2)*(3.14/4)*(7856) # rod 6 mm diameter, 44cm length, 7856 kg/m^3
   M = .4
@@ -67,7 +67,12 @@ def cartpole(learning_method, number_of_rollouts, simulation_steps, ddpg_learnin
              'enable_test': nn_test, 
              'test_episodes': test_episodes,
              'test_episodes_len': 5000}
-  actor = DDPG(env, args)
+  if self_defined_nn_path is not None:
+    actor = SelfDefinedNN.load(self_defined_nn_path)
+    if nn_test:
+      test(env, actor, args, None)
+  else:
+    actor = DDPG(env, args)
 
   #################### Shield #################
   model_path = os.path.split(args['model_path'])[0]+'/'
@@ -83,7 +88,8 @@ def cartpole(learning_method, number_of_rollouts, simulation_steps, ddpg_learnin
   if shield_test:
     shield.test_shield(test_episodes, 5000, mode="single")
 
-  actor.sess.close()
+  if hasattr(actor, "sess"):
+    actor.sess.close()
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Running Options')
@@ -92,12 +98,14 @@ if __name__ == "__main__":
   parser.add_argument('--shield_test', action="store_true", dest="shield_test")
   parser.add_argument('--test_episodes', action="store", dest="test_episodes", type=int)
   parser.add_argument('--retrain_nn', action="store_true", dest="retrain_nn")
+  parser.add_argument('--self_defined_nn_path', action="store", type=str, default=None, dest="self_defined_nn_path")
   parser_res = parser.parse_args()
   nn_test = parser_res.nn_test
   retrain_shield = parser_res.retrain_shield
   shield_test = parser_res.shield_test
   test_episodes = parser_res.test_episodes if parser_res.test_episodes is not None else 100
   retrain_nn = parser_res.retrain_nn
+  self_defined_nn_path = parser_res.self_defined_nn_path
 
   cartpole("random_search", 200, 200, 0, [1200,900], [1000,900,800], "ddpg_chkp/perfect_model/cartpole/change_l/", 
-    nn_test=nn_test, retrain_shield=retrain_shield, shield_test=shield_test, test_episodes=test_episodes, retrain_nn=retrain_nn)
+    nn_test=nn_test, retrain_shield=retrain_shield, shield_test=shield_test, test_episodes=test_episodes, retrain_nn=retrain_nn, self_defined_nn_path=self_defined_nn_path)
